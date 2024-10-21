@@ -1,0 +1,9 @@
+[submodule "submodules/predicting-sediment-thickness"]
+	path = submodules/predicting-sediment-thickness
+	url = git@github.com:EarthByte/predicting-sediment-thickness.git
+[submodule "submodules/paleobathymetry-workflow"]
+	path = submodules/paleobathymetry-workflow
+	url = git@github.com:EarthByte/paleobathymetry-workflow.git
+[submodule "submodules/CarbonateSedimentThickness"]
+	path = submodules/CarbonateSedimentThickness
+	url = git@github.com:EarthByte/CarbonateSedimentThickness.git
