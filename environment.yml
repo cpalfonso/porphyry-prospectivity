@@ -3,6 +3,7 @@ channels:
   - nodefaults
 dependencies:
   - python=3
+  - bs4
   - cartopy
   - dask
   - dask-ml
@@ -11,6 +12,7 @@ dependencies:
   - ipykernel
   - joblib
   - jupyter
+  - lxml
   - matplotlib
   - moviepy
   - netcdf4
@@ -29,7 +31,7 @@ dependencies:
   - rioxarray
   - ruamel.yaml
   - scikit-image
-  - scikit-learn<1.5.0
+  - scikit-learn>=1.5.0
   - scipy
   - shapely
   - six

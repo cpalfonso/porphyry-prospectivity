@@ -1,12 +1,9 @@
 .DS_Store
 EarthBytePlateMotionModel-ARCHIVE
-plate_model
-plate_model.zip
-source_data
-source_data.zip
-prepared_data
-prepared_data.zip
-extracted_data
+plate_model*
+source_data*
+prepared_data*
+extracted_data*
 __pycache__
 .mypy_cache
 .vscode
@@ -19,3 +16,4 @@ supplementary_figures.zip
 *.pdf
 .gitattributes
 *.log
+gmt.history

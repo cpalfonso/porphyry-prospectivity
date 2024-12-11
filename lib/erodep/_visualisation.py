@@ -21,12 +21,13 @@ from gplately.plot import (
     SubductionTeeth,
     shapelify_feature_lines,
 )
-try:
-    from gplately.plot import _meridian_from_projection
-except ImportError:
-    from gplately.plot._axes_tools import (
-        meridian_from_projection as _meridian_from_projection,
-    )
+from gplately.plot import _meridian_from_ax
+# try:
+#     from gplately.plot import _meridian_from_projection
+# except ImportError:
+#     from gplately.plot._axes_tools import (
+#         meridian_from_projection as _meridian_from_projection,
+#     )
 from gplately.tools import lonlat2xyz
 from joblib import (
     Parallel,
@@ -1064,12 +1065,12 @@ def _prepare_map(
         left=shapelify_feature_lines(
             gplot.trench_left,
             tessellate_degrees=0.1,
-            central_meridian=_meridian_from_projection(projection),
+            central_meridian=_meridian_from_ax(ax),
         ),
         right=shapelify_feature_lines(
             gplot.trench_right,
             tessellate_degrees=0.1,
-            central_meridian=_meridian_from_projection(projection),
+            central_meridian=_meridian_from_ax(ax),
         ),
         **TEETH_KW,
     )

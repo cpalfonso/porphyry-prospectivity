@@ -6,7 +6,7 @@ from ruamel.yaml import YAML
 _DEFAULT_CONFIG = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
     "..",
-    "notebook_parameters.yml",
+    "notebook_parameters_default.yml",
 )
 
 

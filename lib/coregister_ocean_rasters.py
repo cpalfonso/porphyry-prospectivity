@@ -40,6 +40,7 @@ def run_coregister_ocean_rasters(
     rotation_model: Optional[_RotationModelInput] = None,
     plates_dir: Optional[_PathLike] = None,
     agegrid_dir: Optional[_PathLike] = None,
+    spreadrate_dir: Optional[_PathLike] = None,
     sedthick_dir: Optional[_PathLike] = None,
     carbonate_dir: Optional[_PathLike] = None,
     co2_dir: Optional[_PathLike] = None,
@@ -77,6 +78,8 @@ def run_coregister_ocean_rasters(
         `topology_features` and `rotation_model` are not provided).
     agegrid_dir : str, optional
         Directory containing seafloor age raster data.
+    spreadrate_dir : str, optional
+        Directory containing seafloor spreading rate raster data.
     sedthick_dir : str, optional
         Directory containing sediment thickness raster data.
     carbonate_dir : str, optional
@@ -127,11 +130,15 @@ def run_coregister_ocean_rasters(
             )
         os.makedirs(output_dir, exist_ok=True)
 
+    if spreadrate_dir is None and agegrid_dir is not None:
+        spreadrate_dir = agegrid_dir
+
     if nprocs == 1:
         out = _run_subset(
             times=times,
             dfs=input_data,
             agegrid_dir=agegrid_dir,
+            spreadrate_dir=spreadrate_dir,
             sedthick_dir=sedthick_dir,
             carbonate_dir=carbonate_dir,
             co2_dir=co2_dir,
@@ -160,6 +167,7 @@ def run_coregister_ocean_rasters(
                     times=t,
                     dfs=d,
                     agegrid_dir=agegrid_dir,
+                    spreadrate_dir=spreadrate_dir,
                     sedthick_dir=sedthick_dir,
                     carbonate_dir=carbonate_dir,
                     co2_dir=co2_dir,
@@ -197,6 +205,7 @@ def _run_subset(
     times,
     dfs,
     agegrid_dir,
+    spreadrate_dir,
     sedthick_dir,
     carbonate_dir,
     co2_dir,
@@ -222,6 +231,7 @@ def _run_subset(
             time=t,
             df=df,
             agegrid_dir=agegrid_dir,
+            spreadrate_dir=spreadrate_dir,
             sedthick_dir=sedthick_dir,
             carbonate_dir=carbonate_dir,
             co2_dir=co2_dir,
@@ -240,6 +250,7 @@ def coregister_ocean_rasters(
     time: float,
     df: _PathOrDataFrame,
     agegrid_dir: _PathLike,
+    spreadrate_dir: _PathLike,
     sedthick_dir: _PathLike,
     carbonate_dir: _PathLike,
     co2_dir: _PathLike,
@@ -264,6 +275,8 @@ def coregister_ocean_rasters(
         The input subduction zone data.
     agegrid_dir : str
         Directory containing seafloor age raster data.
+    spreadrate_dir : str
+        Directory containing seafloor spreading rate raster data.
     sedthick_dir : str
         Directory containing sediment thickness raster data.
     carbonate_dir : str
@@ -333,6 +346,21 @@ def coregister_ocean_rasters(
             raise FileNotFoundError(
                 "Age grid file not found: " + agegrid_filename
             )
+
+    if spreadrate_dir is None:
+        spreadrate_filename = None
+    elif spreadrate_dir == agegrid_dir:
+        spreadrate_filename = os.path.join(
+            spreadrate_dir, f"seafloor_age_{time:0.0f}Ma.nc"
+        )
+    else:
+        spreadrate_filename = os.path.join(
+            spreadrate_dir, f"spreading_rate_{time:0.0f}Ma.nc"
+        )
+    if spreadrate_filename is not None and not os.path.isfile(spreadrate_filename):
+        raise FileNotFoundError(
+            "Spreading rate file not found: " + spreadrate_filename
+        )
 
     if sedthick_dir is None:
         sedthick_filename = None
@@ -425,7 +453,7 @@ def coregister_ocean_rasters(
     for filename, name in zip(
         (
             agegrid_filename,
-            agegrid_filename,
+            spreadrate_filename,
             sedthick_filename,
             carbonate_filename,
             co2_filename,
@@ -450,9 +478,9 @@ def coregister_ocean_rasters(
             continue
         raster_data[name] = {}
         with xr.open_dataset(filename) as dset:
-            if name == "agegrid":
+            if name == "agegrid" and "seafloor_age" in dset.data_vars:
                 varname = "seafloor_age"
-            elif name == "spreadrate":
+            elif name == "spreadrate" and "spreading_rate" in dset.data_vars:
                 varname = "spreading_rate"
             else:
                 varname = "z"

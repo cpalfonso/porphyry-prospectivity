@@ -1,6 +1,7 @@
 """Functions to generate random unlabelled points for PU model training."""
 import concurrent.futures
 import os
+import warnings
 from sys import stderr
 
 import geopandas as gpd
@@ -12,11 +13,6 @@ from joblib import Parallel, delayed
 from shapely.geometry import Point
 
 from .misc import reconstruct_by_topologies
-
-# North/South America bounds
-DEFAULT_LAT_SPLIT = 12.0
-DEFAULT_LON_MIN = -180.0
-DEFAULT_LON_MAX = -30.0
 
 DEFAULT_UNLABELED_POINTS_FILENAME = None
 
@@ -91,22 +87,6 @@ def generate_unlabelled_points(
     results = pd.concat(results, ignore_index=True).sort_values(by="age (Ma)")
     results["source"] = "random"
     results["label"] = "unlabelled"
-    def func(row):
-        if row["source"] != "random":
-            try:
-                return row["region"]
-            except KeyError:
-                return np.nan
-        lon = row["present_lon"]
-        lat = row["present_lat"]
-        if not (lon >= DEFAULT_LON_MIN and lon <= DEFAULT_LON_MAX):
-            region = "other"
-        elif lat >= DEFAULT_LAT_SPLIT:
-            region = "NAm"
-        else:
-            region = "SAm"
-        return region
-    results["region"] = results.apply(func, axis="columns")
 
     if output_filename is not None:
         output_dir = os.path.dirname(os.path.abspath(output_filename))
@@ -182,6 +162,19 @@ def _generate_points_timestep(
             input_dir, f"study_area_{time:0.0f}Ma.shp"
         )
     gdf = gpd.read_file(input_filename)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", UserWarning)
+        # No valid study area, return empty DataFrame
+        if gdf.area.sum() <= 0.0:
+            return pd.DataFrame(
+                columns=[
+                    "lon",
+                    "lat",
+                    "present_lon",
+                    "present_lat",
+                    "age (Ma)",
+                ],
+            )
 
     points = np.full((num, 2), np.nan)
     to_fill = np.where(np.any(np.isnan(points), axis=1))[0]
