@@ -19,6 +19,7 @@ from joblib import (
 from pulearn import BaggingPuClassifier
 from scipy.integrate import trapezoid
 from shapely.geometry import MultiPoint
+from shapely.geometry.base import BaseGeometry
 from sklearn import __version__ as _sklearn_version_string
 from sklearn.base import BaseEstimator
 from sklearn.ensemble import (
@@ -51,6 +52,7 @@ COLUMNS_TO_DROP = {
     "arc_segment_length (degrees)",
     "trench_normal_angle (degrees)",
     "distance_from_trench_start (degrees)",
+    "distance_from_trench_start (km)",
     "crustal_thickness_n",
     "magnetic_anomaly_n",
     "magnetic_anomaly_max (nT)",
@@ -462,15 +464,17 @@ def _grid_points_time(
         )
     gdf = gpd.read_file(polygons_filename)
     polygons = gdf.geometry
-    minx, miny, maxx, maxy = polygons.total_bounds
+    # minx, miny, maxx, maxy = polygons.total_bounds
 
-    minx = (int(minx / resolution) - 1) * resolution
-    maxx = (int(maxx / resolution) + 1) * resolution
-    miny = (int(miny / resolution) - 1) * resolution
-    maxy = (int(maxy / resolution) + 1) * resolution
+    # minx = (int(minx / resolution) - 1) * resolution
+    # maxx = (int(maxx / resolution) + 1) * resolution
+    # miny = (int(miny / resolution) - 1) * resolution
+    # maxy = (int(maxy / resolution) + 1) * resolution
 
-    lons = np.arange(minx, maxx + resolution, resolution)
-    lats = np.arange(miny, maxy + resolution, resolution)
+    # lons = np.arange(minx, maxx + resolution, resolution)
+    # lats = np.arange(miny, maxy + resolution, resolution)
+    lons = np.arange(-180, 180 + resolution, resolution)
+    lats = np.arange(-90, 90 + resolution, resolution)
 
     mlons, mlats = np.meshgrid(lons, lats)
     mlons = mlons.reshape((-1, 1))
@@ -481,7 +485,30 @@ def _grid_points_time(
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", RuntimeWarning)
         intersection = polygons.unary_union.intersection(mp)
-    intersection_coords = np.row_stack([i.coords for i in intersection.geoms])
+    if hasattr(intersection, "geoms"):
+        if len(intersection.geoms) <= 0:
+            return pd.DataFrame(
+                columns=[
+                    "lon",
+                    "lat",
+                    "present_lon",
+                    "present_lat",
+                    "age (Ma)",
+                ]
+            )
+        intersection_coords = np.row_stack([i.coords for i in intersection.geoms])
+    elif isinstance(intersection, BaseGeometry):
+        intersection_coords = np.reshape(intersection.coords, (-1, 2))
+    else:
+        return pd.DataFrame(
+            columns=[
+                "lon",
+                "lat",
+                "present_lon",
+                "present_lat",
+                "age (Ma)",
+            ]
+        )
     plons = intersection_coords[:, 0]
     plats = intersection_coords[:, 1]
 

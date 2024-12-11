@@ -419,6 +419,9 @@ def format_feature_name(s, bold=False):
         "(degrees)": r"($\mathrm{\degree}$)",
         "(km)": r"($\mathrm{km}$)",
         "(km/Myr)": r"($\mathrm{km \; {Myr}^{-1}}$)",
+        "(/Ps)": r"($\mathrm{{Ps}^{-1}}$)",
+        "(/s)": r"($\mathrm{{s}^{-1}}$)",
+        "(rad/Ps)": r"($\mathrm{rad. \; {Ps}^{-1}}$)",
     }
     if bold:
         replace = {
