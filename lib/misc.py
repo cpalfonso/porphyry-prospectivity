@@ -422,8 +422,10 @@ def format_feature_name(s, bold=False):
         "(km)": r"($\mathrm{km}$)",
         "(km/Myr)": r"($\mathrm{km \; {Myr}^{-1}}$)",
         "(/Ps)": r"($\mathrm{{Ps}^{-1}}$)",
+        "(/Ps/Myr)": r"($\mathrm{{Ps}^{-1} \; {Myr}^{-1}}$)",
         "(/s)": r"($\mathrm{{s}^{-1}}$)",
         "(rad/Ps)": r"($\mathrm{rad. \; {Ps}^{-1}}$)",
+        "(rad/Ps/Myr)": r"($\mathrm{rad. \; {Ps}^{-1} \; {Myr}^{-1}}$)",
     }
     if bold:
         replace = {
