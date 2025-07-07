@@ -14,11 +14,13 @@ from typing import (
 
 import numpy as np
 import pandas as pd
-from gplately import (
-    PlateReconstruction,
-    EARTH_RADIUS,
-)
-from ptt import subduction_convergence
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", UserWarning)
+    from gplately import (
+        PlateReconstruction,
+        EARTH_RADIUS,
+    )
+    from ptt import subduction_convergence
 
 from .misc import _PathLike
 
@@ -240,5 +242,5 @@ def _parallel_func(
         data,
         columns=column_names,
     )
-    out["age (Ma)"] = np.float_(time)
+    out["age (Ma)"] = np.float64(time)
     return out

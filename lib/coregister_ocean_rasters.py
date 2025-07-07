@@ -10,11 +10,13 @@ import numpy as np
 import pandas as pd
 import pygplates
 import xarray as xr
-from gplately import (
-    PlateReconstruction,
-    Raster,
-    EARTH_RADIUS,
-)
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", UserWarning)
+    from gplately import (
+        PlateReconstruction,
+        Raster,
+        EARTH_RADIUS,
+    )
 from sklearn.neighbors import NearestNeighbors
 from skimage.transform import resize
 

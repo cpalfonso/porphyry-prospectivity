@@ -55,39 +55,62 @@ def calculate_depth_contours(
 
     print('...... Calculating LIP contours')
 
-    ## -------- With matplotlib. 
-    ##  create contours
-    cs = plt.contourf(clipped_LIPs.x, clipped_LIPs.y, clipped_LIPs, cont_levels)
-    # ----
-    # Get contours for each LIP into a geodataframe
-    # Using code from here: https://chrishavlin.com/tag/shapely/
 
     contour_gdf = gpd.GeoDataFrame()
     contour_gdf['CON_ELEV'] = None
     contour_gdf['geometry'] = None
     contour_gdf = contour_gdf.set_crs(epsg=4326)
-
-    # loop over collections (and polygons in each collection), store in list
     polys = []
     elev = []
-
-    # create lookup table so we can get the contour level out
-    lvl_lookup = dict(zip(cs.collections, cs.levels))
-    for col in cs.collections:
-        z = lvl_lookup[col]  # the value of this level
-        for contour_path in col.get_paths():
+    for cont_level in cont_levels:
+        cs = plt.contour(clipped_LIPs.x, clipped_LIPs.y, clipped_LIPs, [cont_level])
+        for contour_path in cs.get_paths():
             # create the polygon for this level
             for ncp, cp in enumerate(contour_path.to_polygons()):
                 lons = cp[:, 0]
                 lats = cp[:, 1]
                 new_shape = shapely.geometry.Polygon(
                     [(i[0], i[1]) for i in zip(lons, lats)])
+                new_shape = new_shape.buffer(0.1)  # try to avoid invalid topologies
 
                 # 20240603: for some reason I'm now missing all my LIPs. Commenting out above to try this instead.
                 poly = new_shape
-
                 polys.append(poly)
-                elev.append(z)
+                elev.append(cont_level)
+
+    # ## -------- With matplotlib. 
+    # ##  create contours
+    # cs = plt.contourf(clipped_LIPs.x, clipped_LIPs.y, clipped_LIPs, cont_levels)
+    # # ----
+    # # Get contours for each LIP into a geodataframe
+    # # Using code from here: https://chrishavlin.com/tag/shapely/
+
+    # contour_gdf = gpd.GeoDataFrame()
+    # contour_gdf['CON_ELEV'] = None
+    # contour_gdf['geometry'] = None
+    # contour_gdf = contour_gdf.set_crs(epsg=4326)
+
+    # # loop over collections (and polygons in each collection), store in list
+    # polys = []
+    # elev = []
+
+    # # create lookup table so we can get the contour level out
+    # lvl_lookup = dict(zip(cs.collections, cs.levels))
+    # for col in cs.collections:
+    #     z = lvl_lookup[col]  # the value of this level
+    #     for contour_path in col.get_paths():
+    #         # create the polygon for this level
+    #         for ncp, cp in enumerate(contour_path.to_polygons()):
+    #             lons = cp[:, 0]
+    #             lats = cp[:, 1]
+    #             new_shape = shapely.geometry.Polygon(
+    #                 [(i[0], i[1]) for i in zip(lons, lats)])
+
+    #             # 20240603: for some reason I'm now missing all my LIPs. Commenting out above to try this instead.
+    #             poly = new_shape
+
+    #             polys.append(poly)
+    #             elev.append(z)
 
     contour_gdf['geometry'] = polys
     contour_gdf['CON_ELEV'] = elev

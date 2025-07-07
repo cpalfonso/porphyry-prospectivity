@@ -2,12 +2,15 @@
 zone kinematics data.
 """
 import os
+import warnings
 from sys import stderr
 from typing import Optional
 
 import numpy as np
 import pandas as pd
-from gplately import EARTH_RADIUS
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", UserWarning)
+    from gplately import EARTH_RADIUS
 from joblib import Parallel, delayed
 from sklearn.neighbors import NearestNeighbors
 

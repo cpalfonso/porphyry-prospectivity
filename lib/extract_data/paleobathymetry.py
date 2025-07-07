@@ -1,4 +1,5 @@
 import os
+import warnings
 
 import fiona
 import geopandas as gpd
@@ -12,7 +13,9 @@ import rioxarray
 import shapely
 import xarray as xr
 from datetime import datetime
-from gplately.ptt.utils import call_system_command
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", UserWarning)
+    from gplately.ptt.utils import call_system_command
 
 
 def shift_antimeridian(x, y, z=None):

@@ -6,7 +6,7 @@ dependencies:
   - bs4
   - cartopy
   - dask
-  - dask-ml
+  - fiona
   - geopandas
   - gmt
   - ipykernel
@@ -16,7 +16,7 @@ dependencies:
   - matplotlib
   - moviepy
   - netcdf4
-  - numpy
+  - numpy<2.2  # required by pulearn
   - pandas
   - papermill
   - pip
@@ -31,16 +31,17 @@ dependencies:
   - rioxarray
   - ruamel.yaml
   - scikit-image
-  - scikit-learn>=1.5.0
-  - scipy
+  - scikit-learn<1.6  # required by pulearn
+  - scipy<1.15
+  - setuptools<81
   - shapely
-  - six
+  - six>=1.16,<1.17  # required by pulearn
   - stripy
   - tqdm
   - xarray
   - py-xgboost
   - pip:
     - PlateTectonicTools
-    - "git+https://github.com/pulearn/pulearn.git@master"
+    - pulearn
     - "git+https://github.com/cpalfonso/gplately.git@teeth-updates"
     - "git+https://github.com/brmather/Slab-Dip.git@main"

@@ -8,7 +8,9 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 import pygplates
-from gplately.tools import xyz2lonlat
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", UserWarning)
+    from gplately.tools import xyz2lonlat
 from joblib import Parallel, delayed
 from shapely.geometry import Point
 

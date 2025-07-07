@@ -1,9 +1,12 @@
 import requests
+import warnings
 import zipfile
 from pathlib import Path
 
 import pygplates
-from gplately.grids import rasterise
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", UserWarning)
+    from gplately.grids import rasterise
 
 PALEOTOPO_BASENAME = "bg-14-5425-2017-supplement.zip"
 PALEOTOPO_URL = "https://bg.copernicus.org/articles/14/5425/2017/bg-14-5425-2017-supplement.zip"

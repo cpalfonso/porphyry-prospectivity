@@ -1,11 +1,14 @@
 """From create_LIP_conjugates.ipynb"""
 import os
+import warnings
 
 import fiona
 import geopandas as gpd
 import numpy as np
 import pandas as pd
-import ptt
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", UserWarning)
+    import ptt
 import pygplates
 import shapely
 

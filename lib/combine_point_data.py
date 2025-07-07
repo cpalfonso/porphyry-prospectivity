@@ -10,10 +10,12 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 import pygplates
-from gplately import (
-    PlateReconstruction,
-    PlotTopologies,
-)
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", UserWarning)
+    from gplately import (
+        PlateReconstruction,
+        PlotTopologies,
+    )
 from joblib import Parallel, delayed
 from shapely.geometry import Point
 
