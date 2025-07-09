@@ -5,7 +5,7 @@ all_notebooks:
   output_dir: outputs_deformation
   use_extracted_data: True
   extracted_data_dir: "extracted_data"
-  n_jobs: 8
+  n_jobs: 4
   verbose: False
   random_seed: 1234
   overwrite_output: False
@@ -84,7 +84,7 @@ notebook_05:
 
 notebook_06:
   output_dir:
-  n_jobs: 12
+  n_jobs: 6
   verbose:
   use_extracted_data:
 
