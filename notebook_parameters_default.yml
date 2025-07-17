@@ -31,7 +31,7 @@ notebook_00b:
   overwrite_output:
   extracted_data_dir:
   regions_filename:
-  deposits_filename: "deposit_data_global.csv"
+  deposits_filename: "deposits.csv"
   num_unlabelled: 200
 
 notebook_00c:
@@ -122,7 +122,7 @@ defaults:
   notebook_00a:
     cleanup: False
   notebook_00b:
-    deposits_filename: "deposit_data_global.csv"
+    deposits_filename: "deposits.csv"
     num_unlabelled: 200
   notebook_00c:
     grid_resolution: 0.5
