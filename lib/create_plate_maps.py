@@ -11,11 +11,13 @@ from typing import (
 
 import numpy as np
 import pygplates
-from gplately import (
-    PlateReconstruction,
-    PlotTopologies,
-    Raster,
-)
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", UserWarning)
+    from gplately import (
+        PlateReconstruction,
+        PlotTopologies,
+        Raster,
+    )
 from rasterio.enums import MergeAlg
 from rasterio.features import rasterize
 from rasterio.transform import from_bounds

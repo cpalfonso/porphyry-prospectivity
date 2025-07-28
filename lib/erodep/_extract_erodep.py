@@ -14,7 +14,9 @@ from typing import (
 import numpy as np
 import pandas as pd
 import xarray as xr
-from gplately.tools import lonlat2xyz
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", UserWarning)
+    from gplately.tools import lonlat2xyz
 from numpy.typing import (
     ArrayLike,
     NDArray,
@@ -85,7 +87,7 @@ def _erodep_timestep(time, dir=_DEFAULT_DIR, dt=1.0):
     if time == 0.0:
         lats, lons = extract_lat_lon(dir=dir)
         shape = (lats.size, lons.size)
-        return np.zeros(shape, dtype=np.float_)
+        return np.zeros(shape, dtype=np.float64)
 
     erodep_rate = _erorate_timestep(time=time, dir=dir)
     timestep_total = erodep_rate * dt

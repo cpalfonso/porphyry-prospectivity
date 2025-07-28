@@ -1,4 +1,5 @@
 import os
+import warnings
 from multiprocessing import cpu_count
 from typing import (
     Literal,
@@ -12,23 +13,19 @@ import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from gplately import (
-    PlateReconstruction,
-    PlotTopologies,
-    Raster,
-)
-from gplately.plot import (
-    SubductionTeeth,
-    shapelify_feature_lines,
-)
-from gplately.plot import _meridian_from_ax
-# try:
-#     from gplately.plot import _meridian_from_projection
-# except ImportError:
-#     from gplately.plot._axes_tools import (
-#         meridian_from_projection as _meridian_from_projection,
-#     )
-from gplately.tools import lonlat2xyz
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", UserWarning)
+    from gplately import (
+        PlateReconstruction,
+        PlotTopologies,
+        Raster,
+    )
+    from gplately.plot import (
+        SubductionTeeth,
+        shapelify_feature_lines,
+    )
+    from gplately.plot import _meridian_from_ax
+    from gplately.tools import lonlat2xyz
 from joblib import (
     Parallel,
     delayed,

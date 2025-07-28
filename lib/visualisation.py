@@ -1,4 +1,5 @@
 """Functions for creating plots of prospectivity maps."""
+import warnings
 from typing import (
     Any,
     Mapping,
@@ -12,11 +13,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import pygplates
-from gplately import (
-    PlateReconstruction,
-    PlotTopologies,
-    Raster,
-)
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", UserWarning)
+    from gplately import (
+        PlateReconstruction,
+        PlotTopologies,
+        Raster,
+    )
 from matplotlib import colormaps
 from matplotlib.axes import Axes
 from matplotlib.cm import ScalarMappable

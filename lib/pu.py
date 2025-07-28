@@ -10,7 +10,9 @@ import pandas as pd
 import pygplates
 import rioxarray
 import xarray as xr
-from gplately import PlateReconstruction
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", UserWarning)
+    from gplately import PlateReconstruction
 from joblib import (
     Parallel,
     delayed,
@@ -52,7 +54,7 @@ COLUMNS_TO_DROP = {
     "arc_segment_length (degrees)",
     "trench_normal_angle (degrees)",
     "distance_from_trench_start (degrees)",
-    "distance_from_trench_start (km)",
+    # "distance_from_trench_start (km)",
     "crustal_thickness_n",
     "magnetic_anomaly_n",
     "magnetic_anomaly_max (nT)",

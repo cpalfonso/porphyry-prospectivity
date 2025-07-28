@@ -212,7 +212,7 @@ def _region_cv(
     model.fit(x_train, y_train)
     fit_time = time.time() - t0
 
-    probs = np.full_like(y_test, np.nan, dtype=np.float_)
+    probs = np.full_like(y_test, np.nan, dtype=np.float64)
     region_data = {}
     for region in regions:
         indices_region = np.where(test_data["region"] == region)[0]
@@ -321,7 +321,7 @@ def _combined_cv(
     model.fit(x_train, y_train)
     fit_time = time.time() - t0
 
-    # probs = np.full_like(y_test, np.nan, dtype=np.float_)
+    # probs = np.full_like(y_test, np.nan, dtype=np.float64)
     t0 = time.time()
     probs = model.predict_proba(x_test)[:, 1]
     predict_time = time.time() - t0

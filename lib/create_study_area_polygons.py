@@ -16,15 +16,17 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 import pygplates
-from gplately import (
-    PlateReconstruction,
-    PlotTopologies,
-    EARTH_RADIUS,
-)
-from gplately.geometry import (
-    pygplates_to_shapely,
-    wrap_geometries,
-)
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", UserWarning)
+    from gplately import (
+        PlateReconstruction,
+        PlotTopologies,
+        EARTH_RADIUS,
+    )
+    from gplately.geometry import (
+        pygplates_to_shapely,
+        wrap_geometries,
+    )
 from joblib import Parallel, delayed
 from shapely.geometry.base import BaseGeometry, BaseMultipartGeometry
 from shapely.ops import linemerge
@@ -248,7 +250,10 @@ def create_study_area_polygons(
         topologies = _merge_lines(topologies)
         buffered = {}
         for _, row in topologies.iterrows():
-            _buffer_sz(row, buffer_distance, topologies.crs, out=buffered)
+            try:
+                _buffer_sz(row, buffer_distance, topologies.crs, out=buffered)
+            except pygplates.InvalidPointsForPolygonConstructionError:
+                pass
         buffered = gpd.GeoDataFrame(
             buffered, geometry="geometry", crs=topologies.crs
         )
@@ -279,6 +284,11 @@ def create_study_area_polygons(
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", UserWarning)
             buffered.to_file(output_filename)
+    if buffered.shape[0] == 0:
+        warnings.warn(
+            f"No study area polygons were created for time {time}Ma",
+            category=RuntimeWarning,
+        )
     if return_output:
         return buffered
     return None

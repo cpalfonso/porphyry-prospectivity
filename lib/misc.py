@@ -11,11 +11,13 @@ from typing import (
 import numpy as np
 import pandas as pd
 import pygplates
-from gplately import EARTH_RADIUS
-from gplately.reconstruction import reconstruct_points
-from gplately.tools import plate_isotherm_depth
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", UserWarning)
+    from gplately import EARTH_RADIUS
+    from gplately.reconstruction import reconstruct_points
+    from gplately.tools import plate_isotherm_depth
+    from ptt.utils.points_in_polygons import find_polygons
 from pandas.errors import PerformanceWarning
-from ptt.utils.points_in_polygons import find_polygons
 
 # For backwards compatibility
 from .water import (
@@ -351,7 +353,7 @@ def reconstruct_by_topologies(
     times = np.sort(times)
     recon_cols = [*[f"lon_{t}" for t in times], *[f"lat_{t}" for t in times]]
 
-    df_recon = pd.DataFrame(columns=recon_cols, index=data.index, dtype=np.float_)
+    df_recon = pd.DataFrame(columns=recon_cols, index=data.index, dtype=np.float64)
     data = data.join(df_recon)
 
     if not isinstance(rotation_model, pygplates.RotationModel):

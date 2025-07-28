@@ -3,12 +3,14 @@ import warnings
 
 import numpy as np
 import pandas as pd
-from gplately.tools import plate_isotherm_depth
-from slabdip.predictor import (
-    SlabDipper,
-    default_variables as DEFAULT_VARIABLES,
-    default_DataFrame as DEFAULT_TRAINING_DATA,
-)
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", UserWarning)
+    from gplately.tools import plate_isotherm_depth
+    from slabdip.predictor import (
+        SlabDipper,
+        default_variables as DEFAULT_VARIABLES,
+        default_DataFrame as DEFAULT_TRAINING_DATA,
+    )
 
 ARC_DEPTH = 125.0  # km
 
